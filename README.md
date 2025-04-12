@@ -95,12 +95,6 @@ You’ll see a result like:
 
 ---
 
-## 📝 Additional Notes
-
-This prototype does not require deployment to AWS for testing. All AI inference and detection runs locally, using the provided Python scripts and Flask app.
-
----
-
 ## 👨‍💻 Contact
 
 If you have any questions, feel free to reach out to me:
