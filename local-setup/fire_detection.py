@@ -32,33 +32,31 @@ def ensure_sample_rate(original_sample_rate, waveform, desired_sample_rate=16000
 def load_audio(filename):
     sample_rate, wav_data = wavfile.read(filename)
     sample_rate, wav_data = ensure_sample_rate(sample_rate, wav_data)
-    
-    # If the audio is stereo (2 channels), take the average or select one channel to make it mono
+
+    # Convert to mono if stereo
     if len(wav_data.shape) > 1:
-        wav_data = np.mean(wav_data, axis=1)  # Convert to mono by averaging channels
-    
-    waveform = wav_data / np.iinfo(np.int16).max  # Normalize the waveform to the range [-1.0, 1.0]
+        wav_data = np.mean(wav_data, axis=1)
+
+    waveform = wav_data / np.iinfo(np.int16).max
     return sample_rate, waveform
 
-# Load and predict on audio file
+# Main detection function
 def detect_alarm(audio_file, top_n=5):
     sample_rate, waveform = load_audio(audio_file)
     scores, embeddings, spectrogram = model(waveform)
     scores_np = scores.numpy()
     mean_scores = np.mean(scores_np, axis=0)
-    
-    # Get top 5 classes based on mean scores
-    top5 = np.argsort(mean_scores)[-5:][::-1]
-    print("Top predictions:")
-    for i in top5:
-        print(f" - {class_names[i]} ({mean_scores[i]:.2f})")
 
-    # Look for fire-related sounds in top predictions
+    top5 = np.argsort(mean_scores)[-top_n:][::-1]
+    top_predictions = [
+        {"label": class_names[i], "score": float(mean_scores[i])}
+        for i in top5
+    ]
+
     fire_keywords = ['fire', 'smoke alarm', 'fire alarm', 'siren', 'smoke detector']
-    for i in top5:
-        if any(keyword in class_names[i].lower() for keyword in fire_keywords):
-            print("\n🚨 Fire alarm sound detected! 🚨")
-            return True
+    fire_detected = any(
+        any(keyword in class_names[i].lower() for keyword in fire_keywords)
+        for i in top5
+    )
 
-    print("\n✅ No fire-related sounds detected.")
-    return False
+    return fire_detected, top_predictions

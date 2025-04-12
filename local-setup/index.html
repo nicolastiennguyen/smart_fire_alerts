@@ -14,6 +14,7 @@
     <div class="col-lg-6 mx-auto">
       <input class="form-control" type="file" id="fileInput" accept=".wav,audio/wav" />
       <div id="results" class="alert mt-3" style="visibility: hidden;"></div>
+      <ul id="predictions" class="list-group mt-2" style="max-width: 400px; margin: auto; display: none;"></ul>
     </div>
   </main>
 
@@ -21,20 +22,23 @@
     document.getElementById('fileInput').addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (!file) return;
-  
+
       const results = document.getElementById('results');
+      const predictionsList = document.getElementById('predictions');
       results.style.visibility = 'visible';
+      predictionsList.style.display = 'none';
       results.textContent = 'Uploading...';
       results.className = "alert alert-info";
-  
+      predictionsList.innerHTML = "";
+
       const formData = new FormData();
       formData.append('file', file);
-  
+
       const response = await fetch('/upload', {
         method: 'POST',
         body: formData
       });
-  
+
       const data = await response.json();
       if (data.fire_detected) {
         results.textContent = "🚨 Fire alarm sound detected!";
@@ -43,8 +47,17 @@
         results.textContent = "✅ No fire-related sounds detected.";
         results.className = "alert alert-success";
       }
+
+      if (data.top_predictions && data.top_predictions.length) {
+        predictionsList.style.display = 'block';
+        data.top_predictions.forEach(pred => {
+          const li = document.createElement('li');
+          li.className = "list-group-item";
+          li.textContent = `${pred.label} (${(pred.score * 100).toFixed(1)}%)`;
+          predictionsList.appendChild(li);
+        });
+      }
     });
   </script>
-  
 </body>
 </html>
