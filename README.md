@@ -8,7 +8,7 @@ A prototype solution using AI, Python, and AWS to detect fire-related audio even
 
 According to the National Fire Protection Association (NFPA), nearly three out of five home fire deaths occur in properties without working smoke alarms, or where alarms go unheard. In many residential settings, especially those with elderly residents, individuals with disabilities, or those who are away from home, traditional fire alarms may sound but fail to alert anyone. This delay in emergency response significantly increases the risk of injury, death, and property loss.
 
-The risk is even greater for individuals with hearing impairments or those located far from the alarm’s sound. While modern fire alarms are designed to alert homeowners in the event of a fire, many systems lack mechanisms to verify whether the alarm has been acknowledged, or to escalate the situation to emergency contacts or services. Additionally, current smart home systems often fail to integrate real-time verification or automatic notification, leaving dangerous gaps in the response process.
+Traditional smoke alarms are loud, but they’re not always smart. They often can't escalate the alert if no one reacts. Most smart home systems don’t verify whether an alarm was acknowledged, or notify emergency contacts when something goes wrong. That leaves people vulnerable when every second counts.
 
 ---
 
@@ -16,7 +16,7 @@ The risk is even greater for individuals with hearing impairments or those locat
 
 This project implements an AI-powered fire sound detection system that enables users to upload .wav audio files for analysis. The system uses a pre-trained sound classification model (YAMNet from TensorFlow Hub) to process the uploaded audio and identify fire-related sounds, such as fire alarms, smoke detectors, sirens, and other emergency signals. When a fire-related sound is detected, the system sends an immediate SMS alert and publishes a notification to an Amazon SNS topic, simulating a rapid emergency response.
 
-> 🧪 This prototype is designed for local testing. The AWS infrastructure is fully implemented, but users are not expected to deploy it themselves.
+> 🧪 This is a prototype meant for local testing. All AWS services are in place, but you’re not expected to deploy them yourself.
 
 ---
 
@@ -48,16 +48,16 @@ This project implements an AI-powered fire sound detection system that enables u
 - **Lambda**: 
   - Docker-based audio classification handler triggered by S3 `ObjectCreated` events.
   - Generates pre-signed URLs for secure file uploads from the frontend.
-- **API Gateway**: Exposes a REST API to interact with the Lambda functions, especially for pre-signed URL generation.
+- **API Gateway**: Exposes an endpoint for requesting pre-signed URLs
 - **SNS**: Sends alerts via SMS and SNS topics.
-- **SSM Parameter Store**: Stores secure config values like SNS topic ARN, phone number, region, and bucket name.
+- **SSM Parameter Store**: Stores secure config values.
 
 
 ---
 
 ## 💻 Local Setup Instructions
 
-This is the recommended way to test the AI model locally. We include a self-contained Python + HTML/JS interface that simulates uploading a file and running the model.
+You can test the AI locally without touching any AWS resources. There’s a basic Python + HTML/JS interface for uploading files and viewing detection results.
 
 ### 🔧 Requirements
 
@@ -97,6 +97,6 @@ You’ll see a result like:
 
 ## 👨‍💻 Contact
 
-If you have any questions, feel free to reach out to me:
+If you have any questions or feedback, feel free to reach out to me:
 
 - **LinkedIn**: [https://www.linkedin.com/in/nicolas--nguyen/](https://www.linkedin.com/in/nicolas--nguyen/)
