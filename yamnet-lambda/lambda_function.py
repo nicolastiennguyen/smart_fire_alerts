@@ -87,7 +87,7 @@ def lambda_handler(event, context):
         top_predictions = [f"{class_names[i]} (Score: {mean_scores[i]:.2f})" for i in top5]
 
         # Check for fire-related sounds
-        fire_keywords = ['smoke alarm', 'fire alarm', 'siren', 'smoke detector', 'alarm']
+        fire_keywords = ['fire', 'smoke alarm', 'fire alarm', 'siren', 'smoke detector', 'alarm']
         fire_detected = False
         detected_index = None
 

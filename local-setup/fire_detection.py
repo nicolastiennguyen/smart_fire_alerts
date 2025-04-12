@@ -54,7 +54,7 @@ def detect_alarm(audio_file, top_n=5):
         print(f" - {class_names[i]} ({mean_scores[i]:.2f})")
 
     # Look for fire-related sounds in top predictions
-    fire_keywords = ['smoke alarm', 'fire alarm', 'siren', 'smoke detector']
+    fire_keywords = ['fire', 'smoke alarm', 'fire alarm', 'siren', 'smoke detector']
     for i in top5:
         if any(keyword in class_names[i].lower() for keyword in fire_keywords):
             print("\n🚨 Fire alarm sound detected! 🚨")
