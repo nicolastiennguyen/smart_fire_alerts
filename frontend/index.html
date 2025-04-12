@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fire Sound Detection</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <main class="text-center py-5">
+    <h1 class="display-5 fw-bold">Fire Sound Detection</h1>
+    <p class="lead mb-4">Upload an audio file (WAV) to detect fire-related sounds!</p>
+
+    <div class="col-lg-6 mx-auto">
+      <input class="form-control" type="file" id="fileInput" accept=".wav,audio/wav" />
+      <div id="results" class="alert alert-info mt-3" style="visibility: hidden;">Processing...</div>
+    </div>
+  </main>
+
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1157.0.min.js"></script>
+  <script>
+    const results = document.getElementById('results');
+
+    // Replace this with your own S3 bucket name
+    const s3BucketName = 'YOUR-S3-BUCKET-NAME-HERE';
+
+    // Replace this with your API Gateway URL
+    const apiGatewayUrl = 'YOUR-API-GATEWAY-URL-HERE';
+
+    document.getElementById('fileInput').addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      results.style.visibility = 'visible';
+      results.textContent = 'Uploading...';
+      results.className = "alert alert-info";
+
+      const fileName = `audio_${Date.now()}.wav`;
+
+      // Fetch the pre-signed URL from the Lambda function
+      const url = `${apiGatewayUrl}?filename=${fileName}`;
+      const preSignedUrl = await fetch(url)
+        .then(response => response.json())
+        .then(data => data.url)
+        .catch(err => {
+          console.log(err);
+          results.textContent = `Failed to get pre-signed URL: ${err.message}`;
+          results.className = "alert alert-danger";
+          return null;
+        });
+
+        if (preSignedUrl) {
+          try {
+            const uploadResponse = await fetch(preSignedUrl, {
+              method: 'PUT',
+              body: file,
+              headers: { 'Content-Type': "audio/wav" }
+            });
+
+            console.log('Upload response status:', uploadResponse.status);  // Log the response status
+
+            if (uploadResponse.ok) {
+              results.textContent = 'Uploaded! Lambda will process the file shortly.';
+              results.className = "alert alert-success";
+            } else {
+              const errorText = await uploadResponse.text();  // Capture the error response
+              console.log('Error uploading:', errorText);
+              results.textContent = `Upload failed: ${uploadResponse.statusText}`;
+              results.className = "alert alert-danger";
+            }
+          } catch (err) {
+            // Log the error if upload fails
+            console.error('Upload error:', err);
+            results.textContent = `Upload failed: ${err.message}`;
+            results.className = "alert alert-danger";
+          }
+        }
+
+    });
+  </script>
+</body>
+</html>
