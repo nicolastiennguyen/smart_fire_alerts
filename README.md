@@ -57,7 +57,7 @@ This project implements an AI-powered fire sound detection system that enables u
 
 ## 💻 Local Setup Instructions
 
-You can test the AI locally without touching any AWS resources. There’s a basic Python + HTML/JS interface for uploading files and viewing detection results.
+You can test the AI locally without using any AWS resources. There’s a basic Python + HTML/JS interface for uploading files and viewing detection results.
 
 ### 🔧 Requirements
 
