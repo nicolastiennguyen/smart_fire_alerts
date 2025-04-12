@@ -6,13 +6,15 @@ A prototype solution using AI, Python, and AWS to detect fire-related audio even
 
 ## 📌 Problem Statement
 
-In residential and commercial environments, fire-related emergencies can go unnoticed — especially when no one is around. Traditional fire detection systems often lack remote monitoring or intelligent classification. This prototype enhances public safety by detecting fire-related sounds like alarms, smoke detectors, and sirens from audio clips, then triggering instant alerts via SMS and SNS notifications.
+According to the National Fire Protection Association (NFPA), nearly three out of five home fire deaths occur in properties without working smoke alarms, or where alarms go unheard. In many residential settings, especially those with elderly residents, individuals with disabilities, or those who are away from home, traditional fire alarms may sound but fail to alert anyone. This delay in emergency response significantly increases the risk of injury, death, and property loss.
+
+The risk is even greater for individuals with hearing impairments or those located far from the alarm’s sound. While modern fire alarms are designed to alert homeowners in the event of a fire, many systems lack mechanisms to verify whether the alarm has been acknowledged, or to escalate the situation to emergency contacts or services. Additionally, current smart home systems often fail to integrate real-time verification or automatic notification, leaving dangerous gaps in the response process.
 
 ---
 
 ## 🚀 Solution Overview
 
-This project uses TensorFlow’s YAMNet model to identify fire-related audio events, running on a serverless architecture powered by AWS Lambda and S3. Users can upload `.wav` audio files via a simple web interface. If a fire-related sound is detected, alerts are sent automatically.
+This project implements an AI-powered fire sound detection system that enables users to upload .wav audio files for analysis. The system uses a pre-trained sound classification model (YAMNet from TensorFlow Hub) to process the uploaded audio and identify fire-related sounds, such as fire alarms, smoke detectors, sirens, and other emergency signals. When a fire-related sound is detected, the system sends an immediate SMS alert and publishes a notification to an Amazon SNS topic, simulating a rapid emergency response.
 
 > 🧪 This prototype is designed for local testing. The AWS infrastructure is fully implemented, but users are not expected to deploy it themselves.
 
@@ -21,7 +23,7 @@ This project uses TensorFlow’s YAMNet model to identify fire-related audio eve
 ## 🧠 AI Component
 
 - **Model**: [YAMNet](https://tfhub.dev/google/yamnet/1) from TensorFlow Hub — a deep net that predicts audio event classes from the AudioSet dataset.
-- **Detection Logic**: After scoring an audio file, the system checks if any of the top 5 predicted classes include fire-related keywords: `smoke alarm`, `fire alarm`, `siren`, `alarm`, or `smoke detector`.
+- **Detection Logic**: After scoring an audio file, the system checks if any of the top 5 predicted classes include fire-related keywords: `fire`, `smoke alarm`, `fire alarm`, `siren`, `alarm`, or `smoke detector`.
 
 ---
 
