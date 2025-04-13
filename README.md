@@ -8,7 +8,7 @@ A prototype solution using AI, Python, and AWS to detect fire-related audio even
 
 According to the National Fire Protection Association (NFPA), nearly three out of five home fire deaths occur in properties without working smoke alarms, or where alarms go unheard. In many residential settings, especially those with elderly residents, individuals with disabilities, or those who are away from home, traditional fire alarms may sound but fail to alert anyone. This delay in emergency response significantly increases the risk of injury, death, and property loss.
 
-Traditional smoke alarms are loud, but they’re not always smart. They often can't escalate the alert if no one reacts. Most smart home systems don’t verify whether an alarm was acknowledged, or notify emergency contacts when something goes wrong. That leaves people vulnerable when every second counts.
+Traditional smoke alarms are loud, but they’re not always smart. They often can't escalate the alert if no one reacts. Most smart home systems don’t verify whether an alarm was acknowledged, or notify emergency contacts when something goes wrong. That leaves people vulnerable when every second counts. That's where Smart Fire Alerts comes into play.
 
 ---
 
@@ -86,7 +86,7 @@ From the `local-setup` directory:
 
 3. Open your browser to `http://localhost:5000`.
 
-4. Upload a `.wav` file with a fire alarm sound (e.g., `Fire_Alarm_01.wav`).
+4. Upload a `.wav` file with a fire alarm sound (There are sample audio files under the test_audio folder).
 
 You’ll see a result like:
 
