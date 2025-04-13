@@ -10,4 +10,4 @@ COPY smart_fire_detection.py /var/task/
 COPY yamnet_class_map.csv /var/task/
 
 # Set the entry point for the Lambda function
-CMD ["fire_sound_detection_handler.lambda_handler"]
+CMD ["smart_fire_detection.lambda_handler"]
