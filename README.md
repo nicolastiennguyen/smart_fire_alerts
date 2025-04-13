@@ -68,7 +68,7 @@ You can test the AI locally without using any AWS resources. There’s a basic P
 pip install -r requirements.txt
 ```
 
-### ▶How to Run
+### How to Run
 
 From the `local-setup` directory:
 
@@ -94,8 +94,6 @@ You’ll see a result like:
 - 🚨 **Fire alarm sound detected!**
 
 ---
-
-## Contact
 
 If you have any questions or feedback, feel free to reach out to me:
 
