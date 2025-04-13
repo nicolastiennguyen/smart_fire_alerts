@@ -6,7 +6,7 @@ RUN pip install --upgrade pip
 RUN pip install tensorflow tensorflow-hub scipy boto3 numpy
 
 # Copy your function code and class map CSV to the container
-COPY lambda_function.py /var/task/
+COPY fire_sound_detection_handler.py /var/task/
 COPY yamnet_class_map.csv /var/task/
 
 # Set the entry point for the Lambda function
