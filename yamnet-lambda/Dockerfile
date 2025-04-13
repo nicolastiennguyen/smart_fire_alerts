@@ -5,7 +5,7 @@ FROM public.ecr.aws/lambda/python:3.8
 RUN pip install --upgrade pip
 RUN pip install tensorflow tensorflow-hub scipy boto3 numpy
 
-# Copy your function code and class map CSV to the container
+# Copy your function code and class map CSV to the containergi
 COPY smart_fire_detection.py /var/task/
 COPY yamnet_class_map.csv /var/task/
 
