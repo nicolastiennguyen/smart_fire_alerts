@@ -1,10 +1,10 @@
-# 🔥 Smart Fire Alerts
+# Smart Fire Alerts
 
 A prototype solution using AI, Python, and AWS to detect fire-related audio events and send real-time alerts to improve public safety.
 
 ---
 
-## 📌 Problem Statement
+## Problem Statement
 
 According to the National Fire Protection Association (NFPA), nearly three out of five home fire deaths occur in properties without working smoke alarms, or where alarms go unheard. In many residential settings, especially those with elderly residents, individuals with disabilities, or those who are away from home, traditional fire alarms may sound but fail to alert anyone. This delay in emergency response significantly increases the risk of injury, death, and property loss.
 
@@ -12,22 +12,22 @@ Traditional smoke alarms are loud, but they’re not always smart. They often ca
 
 ---
 
-## 🚀 Solution Overview
+## Solution Overview
 
 This project implements an AI-powered fire sound detection system that enables users to upload .wav audio files for analysis. The system uses a pre-trained sound classification model (YAMNet from TensorFlow Hub) to process the uploaded audio and identify fire-related sounds, such as fire alarms, smoke detectors, sirens, and other emergency signals. When a fire-related sound is detected, the system sends an immediate SMS alert and publishes a notification to an Amazon SNS topic, simulating a rapid emergency response.
 
-> 🧪 This is a prototype meant for local testing. All AWS services are in place, but you’re not expected to deploy them yourself.
+> This is a prototype meant for local testing. All AWS services are in place, but you’re not expected to deploy them yourself.
 
 ---
 
-## 🧠 AI Component
+## AI Component
 
 - **Model**: [YAMNet](https://tfhub.dev/google/yamnet/1) from TensorFlow Hub — a deep net that predicts audio event classes from the AudioSet dataset.
 - **Detection Logic**: After scoring an audio file, the system checks if any of the top 5 predicted classes include fire-related keywords: `fire`, `smoke alarm`, `fire alarm`, `siren`, `alarm`, or `smoke detector`.
 
 ---
 
-## 🐍 Python Implementation
+## Python Implementation
 
 - `lambda_function.py`: Main inference function loaded into a Dockerized AWS Lambda. It:
   - Downloads audio from S3.
@@ -39,7 +39,7 @@ This project implements an AI-powered fire sound detection system that enables u
 
 ---
 
-## 🕸️ Web Architecture (AWS)
+## Web Architecture (AWS)
 
 ![Architecture](architecture.png)
 
@@ -55,11 +55,11 @@ This project implements an AI-powered fire sound detection system that enables u
 
 ---
 
-## 💻 Local Setup Instructions
+## Local Setup Instructions
 
 You can test the AI locally without using any AWS resources. There’s a basic Python + HTML/JS interface for uploading files and viewing detection results.
 
-### 🔧 Requirements
+### Requirements
 
 - Python 3.8+
 - Install required packages:
@@ -68,7 +68,7 @@ You can test the AI locally without using any AWS resources. There’s a basic P
 pip install -r requirements.txt
 ```
 
-### ▶️ How to Run
+### ▶How to Run
 
 From the `local-setup` directory:
 
@@ -95,7 +95,7 @@ You’ll see a result like:
 
 ---
 
-## 👨‍💻 Contact
+## Contact
 
 If you have any questions or feedback, feel free to reach out to me:
 
