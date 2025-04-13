@@ -46,7 +46,7 @@ This project implements an AI-powered fire sound detection system that enables u
 **AWS Services Used**:
 - **S3**: Stores uploaded audio files, class map, and hosts the static `index.html` frontend.
 - **Lambda**: 
-  - Docker-based audio classification handler triggered by S3 `ObjectCreated` events.
+  - Audio classification handler triggered by S3 `ObjectCreated` events.
   - Generates pre-signed URLs for secure file uploads from the frontend.
 - **API Gateway**: Exposes an endpoint for requesting pre-signed URLs
 - **SNS**: Sends alerts via SMS and SNS topics.
