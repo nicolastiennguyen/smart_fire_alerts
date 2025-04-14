@@ -39,6 +39,19 @@ This project implements an AI-powered fire sound detection system that enables u
 
 ---
 
+## 📸 Example Screenshots
+
+To give a better sense of how the system behaves in action, here are a few example screenshots:
+
+- The frontend interface for uploading audio files
+- Email notifications triggered by fire vs. non-fire sounds
+
+| Fire Sound Detected | No Fire Sound Detected | Frontend |
+|:-------------------:|:----------------------:|:--------:|
+| ![Fire Sound Detected Email](Fire-Sound%20Detected%20Email%20Notification.png) | ![No Fire Sound Detected Email](No%20Fire-Sound%20Detected%20Email%20Notification.png) | ![Frontend](Frontend.PNG) |
+
+---
+
 ## Web Architecture (AWS)
 
 ![Architecture](architecture.png)
