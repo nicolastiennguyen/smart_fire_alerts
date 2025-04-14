@@ -33,7 +33,7 @@ This project implements an AI-powered fire sound detection system that enables u
   - Downloads audio from S3.
   - Resamples and processes audio.
   - Runs inference with YAMNet.
-  - Publishes an alert to an SNS topic and sends an SMS if fire sounds are detected.
+  - Publishes an alert to an SNS topic and sends an SMS.
 
 - `generate_presigned_url.py`: Generates a pre-signed S3 URL so that users can upload audio securely from the frontend.
 
