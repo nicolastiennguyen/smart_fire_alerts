@@ -43,12 +43,27 @@ This project implements an AI-powered fire sound detection system that enables u
 
 To give a better sense of how the system behaves in action, here are a few example screenshots:
 
-- The frontend interface for uploading audio files
-- Email notifications triggered by fire vs. non-fire sounds
+### 🔊 Frontend Interface
 
-| Fire Sound Detected | No Fire Sound Detected | Frontend |
-|:-------------------:|:----------------------:|:--------:|
-| ![Fire Sound Detected Email](Fire-Sound%20Detected%20Email%20Notification.png) | ![No Fire Sound Detected Email](No%20Fire-Sound%20Detected%20Email%20Notification.png) | ![Frontend](Frontend.PNG) |
+This is the simple HTML interface where users can upload `.wav` files for analysis.
+
+![Frontend UI](Frontend.PNG)
+
+---
+
+### 🚨 Fire Sound Detected
+
+When a fire-related sound is detected (like a smoke alarm), an email notification is triggered:
+
+![Fire Sound Detected Email](Fire-Sound%20Detected%20Email%20Notification.png)
+
+---
+
+### ✅ No Fire Sound Detected
+
+If the uploaded audio doesn’t contain fire-related sounds, a different email is sent to confirm that no alert is necessary:
+
+![No Fire Sound Detected Email](No%20Fire-Sound%20Detected%20Email%20Notification.png)
 
 ---
 
