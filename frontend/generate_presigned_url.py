@@ -6,7 +6,6 @@ from botocore.exceptions import ClientError
 def lambda_handler(event, context):
     print("Received event:", event)
 
-    # Handle CORS preflight
     if event['httpMethod'] == 'OPTIONS':
         return {
             'statusCode': 200,
@@ -32,7 +31,7 @@ def lambda_handler(event, context):
         }
 
     s3_client = boto3.client('s3')
-    bucket_name = os.environ.get('AUDIO_BUCKET_NAME', 'smart-fire-alerts-audio-files')
+    bucket_name = os.environ.get('AUDIO_BUCKET_NAME', 'YOUR-S3-BUCKET-NAME-HERE') 
 
     try:
         presigned_url = s3_client.generate_presigned_url(
