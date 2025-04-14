@@ -1,36 +1,67 @@
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3();
+import boto3
+import os
+import json
+from botocore.exceptions import ClientError
 
-exports.handler = async (event) => {
-    const filename = event.queryStringParameters.filename;
-    const s3BucketName = 'YOUR-S3-BUCKET-NAME-HERE';
+def lambda_handler(event, context):
+    print("Received event:", event)
 
-    // Generate the pre-signed URL
-    const signedUrlParams = {
-        Bucket: s3BucketName,
-        Key: filename,
-        Expires: 60, // Link expiration in seconds
-        ContentType: 'audio/wav' // Change this if necessary
-    };
-
-    try {
-        const signedUrl = s3.getSignedUrl('putObject', signedUrlParams);
-        
-        // Return the pre-signed URL with CORS headers
+    # Handle CORS preflight
+    if event['httpMethod'] == 'OPTIONS':
         return {
-            statusCode: 200,
-            headers: {
-                'Access-Control-Allow-Origin': '*',  // Allow requests from all domains (or specify your domain here)
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type',
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type'
+            }
+        }
+
+    try:
+        query_params = event.get('queryStringParameters') or {}
+        filename = query_params['filename']
+        print(f"Extracted filename: {filename}")
+    except KeyError:
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             },
-            body: JSON.stringify({ url: signedUrl })
-        };
-    } catch (error) {
-        console.error("Error generating pre-signed URL:", error);
+            'body': json.dumps({'error': 'Missing query string parameter: filename'})
+        }
+
+    s3_client = boto3.client('s3')
+    bucket_name = os.environ.get('AUDIO_BUCKET_NAME', 'smart-fire-alerts-audio-files')
+
+    try:
+        presigned_url = s3_client.generate_presigned_url(
+            'put_object',
+            Params={
+                'Bucket': bucket_name,
+                'Key': filename,
+                'ContentType': 'audio/wav'
+            },
+            ExpiresIn=3600
+        )
+
         return {
-            statusCode: 500,
-            body: JSON.stringify({ error: "Failed to generate pre-signed URL" })
-        };
-    }
-};
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type'
+            },
+            'body': json.dumps({'url': presigned_url})
+        }
+
+    except ClientError as e:
+        print(f"Error generating pre-signed URL: {e}")
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Failed to generate URL', 'message': str(e)})
+        }
