@@ -4,10 +4,12 @@ import os
 
 app = Flask(__name__)
 
+# Serve the HTML file when the root URL is accessed
 @app.route('/')
 def index():
-    return send_from_directory('.', 'index.html')
+    return send_from_directory('.', 'index.html') # Serve index.html from current directory
 
+# Route to handle audio file uploads
 @app.route('/upload', methods=['POST'])
 def upload():
     if 'file' not in request.files:
@@ -16,8 +18,11 @@ def upload():
     file = request.files['file']
     filename = 'uploaded_audio.wav'
     filepath = os.path.join('.', filename)
+    
+     # Save the uploaded file to disk
     file.save(filepath)
 
+    # Run the fire sound detection
     fire_detected, top_predictions = detect_alarm(filepath)
 
     return jsonify({

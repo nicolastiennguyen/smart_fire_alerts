@@ -11,6 +11,7 @@
     <h1 class="display-5 fw-bold">Fire Sound Detection (Local)</h1>
     <p class="lead mb-4">Upload a .wav file to test fire sound detection locally.</p>
 
+    <!-- File input field -->
     <div class="col-lg-6 mx-auto">
       <input class="form-control" type="file" id="fileInput" accept=".wav,audio/wav" />
       <div id="results" class="alert mt-3" style="visibility: hidden;"></div>
@@ -19,18 +20,23 @@
   </main>
 
   <script>
+    // Add event listener to file input for when a file is selected
     document.getElementById('fileInput').addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (!file) return;
 
+      // Get DOM elements for displaying results and predictions
       const results = document.getElementById('results');
       const predictionsList = document.getElementById('predictions');
+
+      // Show the results section and update status text
       results.style.visibility = 'visible';
-      predictionsList.style.display = 'none';
+      predictionsList.style.display = 'none'; // Hide predictions initially
       results.textContent = 'Uploading...';
       results.className = "alert alert-info";
-      predictionsList.innerHTML = "";
+      predictionsList.innerHTML = ""; // Clear any previous predictions
 
+      // Prepare formData to send the file as POST request
       const formData = new FormData();
       formData.append('file', file);
 
@@ -38,8 +44,9 @@
         method: 'POST',
         body: formData
       });
-
       const data = await response.json();
+
+      // Check if fire sound was detected and update results
       if (data.fire_detected) {
         results.textContent = "🚨 Fire alarm sound detected!";
         results.className = "alert alert-danger";
@@ -48,6 +55,7 @@
         results.className = "alert alert-success";
       }
 
+      // If there are top predictions, show them in the list
       if (data.top_predictions && data.top_predictions.length) {
         predictionsList.style.display = 'block';
         data.top_predictions.forEach(pred => {

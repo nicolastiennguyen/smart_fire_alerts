@@ -6,6 +6,7 @@ from botocore.exceptions import ClientError
 def lambda_handler(event, context):
     print("Received event:", event)
 
+    # Handle CORS preflight requests (for browsers)
     if event['httpMethod'] == 'OPTIONS':
         return {
             'statusCode': 200,
@@ -16,6 +17,7 @@ def lambda_handler(event, context):
             }
         }
 
+    # Extract file name from query string parameters
     try:
         query_params = event.get('queryStringParameters') or {}
         filename = query_params['filename']
@@ -33,6 +35,7 @@ def lambda_handler(event, context):
     s3_client = boto3.client('s3')
     bucket_name = os.environ.get('AUDIO_BUCKET_NAME', 'YOUR-S3-BUCKET-NAME-HERE') 
 
+    # Generate a pre-signed URL so users can securely upload files directly to S3
     try:
         presigned_url = s3_client.generate_presigned_url(
             'put_object',

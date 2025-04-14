@@ -12,7 +12,10 @@
     <p class="lead mb-4">Upload an audio file (WAV) to detect fire-related sounds!</p>
 
     <div class="col-lg-6 mx-auto">
+      <!-- File input for audio upload -->
       <input class="form-control" type="file" id="fileInput" accept=".wav,audio/wav" />
+
+      <!-- Result message (hidden by default) -->
       <div id="results" class="alert alert-info mt-3" style="visibility: hidden;">Processing...</div>
     </div>
   </main>
@@ -27,14 +30,17 @@
     // Replace this with your API Gateway URL
     const apiGatewayUrl = 'YOUR-API-GATEWAY-URL-HERE';
 
+    // When the user selects a file
     document.getElementById('fileInput').addEventListener("change", async (e) => {
       const file = e.target.files[0];
       if (!file) return;
 
+      // Show "Uploading..." message
       results.style.visibility = 'visible';
       results.textContent = 'Uploading...';
       results.className = "alert alert-info";
 
+      // Generate a unique filename for the upload
       const fileName = `audio_${Date.now()}.wav`;
 
       // Fetch the pre-signed URL from the Lambda function
@@ -49,6 +55,7 @@
           return null;
         });
 
+        // Upload the audio file directly to S3 using the pre-signed URL
         if (preSignedUrl) {
           try {
             const uploadResponse = await fetch(preSignedUrl, {
@@ -57,19 +64,19 @@
               headers: { 'Content-Type': "audio/wav" }
             });
 
-            console.log('Upload response status:', uploadResponse.status);  // Log the response status
-
+            console.log('Upload response status:', uploadResponse.status);
             if (uploadResponse.ok) {
+              // Show success message
               results.textContent = 'Uploaded! Lambda will process the file shortly.';
               results.className = "alert alert-success";
             } else {
-              const errorText = await uploadResponse.text();  // Capture the error response
+              // Show failed message
+              const errorText = await uploadResponse.text();
               console.log('Error uploading:', errorText);
               results.textContent = `Upload failed: ${uploadResponse.statusText}`;
               results.className = "alert alert-danger";
             }
           } catch (err) {
-            // Log the error if upload fails
             console.error('Upload error:', err);
             results.textContent = `Upload failed: ${err.message}`;
             results.className = "alert alert-danger";

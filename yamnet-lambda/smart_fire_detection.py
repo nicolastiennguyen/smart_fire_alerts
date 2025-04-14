@@ -9,7 +9,7 @@ from scipy.io import wavfile
 import io
 import boto3
 
-# Logging
+# Set up logging to capture logs for the Lambda function
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -48,7 +48,7 @@ def load_class_names():
 
 class_names = load_class_names()
 
-# Function to ensure sample rate is 16kHz
+# Ensure the audio is at 16kHz, which YAMNet expects
 def ensure_sample_rate(original_sample_rate, waveform, desired_sample_rate=16000):
     if original_sample_rate != desired_sample_rate:
         desired_length = int(round(len(waveform) * desired_sample_rate / original_sample_rate))
@@ -57,15 +57,20 @@ def ensure_sample_rate(original_sample_rate, waveform, desired_sample_rate=16000
 
 # Function to load audio from S3
 def load_audio_from_s3(bucket_name, file_key):
+    # Fetch the audio file from S3
     obj = s3.get_object(Bucket=bucket_name, Key=file_key)
     audio_data = obj['Body'].read()
 
+    # Load the audio data and sample rate
     sample_rate, wav_data = wavfile.read(io.BytesIO(audio_data))
+    # Resample to 16kHz if necessary
     sample_rate, wav_data = ensure_sample_rate(sample_rate, wav_data)
 
+    # If the audio is stereo, convert it to mono
     if len(wav_data.shape) > 1:
         wav_data = np.mean(wav_data, axis=1)
 
+    # Normalize the waveform values to a range between -1.0 and 1.0
     waveform = wav_data / np.iinfo(np.int16).max
     return sample_rate, waveform
 
@@ -76,31 +81,34 @@ def lambda_handler(event, context):
         bucket_name = event['Records'][0]['s3']['bucket']['name']
         file_key = event['Records'][0]['s3']['object']['key']
 
+        # Load audio data from the S3 bucket
         sample_rate, waveform = load_audio_from_s3(bucket_name, file_key)
 
-        # Get model predictions
-        scores, _, _ = model(waveform)
-        mean_scores = np.mean(scores.numpy(), axis=0)
+        # Get predictions from the YAMNet model
+        scores, _, _ = model(waveform) # Run the audio data through the model
+        mean_scores = np.mean(scores.numpy(), axis=0) # Compute the mean score across time frames
 
-        # Get top 5 predictions
+        # Sort and format the top 5 predictions
         top5 = np.argsort(mean_scores)[-5:][::-1]
         top_predictions = [f"{class_names[i]} (Score: {mean_scores[i]:.2f})" for i in top5]
 
         # Check for fire-related sounds
         fire_keywords = ['fire', 'smoke alarm', 'fire alarm', 'siren', 'smoke detector', 'alarm']
-        fire_detected = False
+        fire_detected = False # Flag to indicate if fire is detected
         detected_index = None
 
+        # Check if any of the top predictions match fire-related keywords
         for i in top5:
             if any(keyword in class_names[i].lower() for keyword in fire_keywords):
                 fire_detected = True
-                detected_index = i
+                detected_index = i # Store the index of the detected fire-related sound
                 break
 
         # Prepare message for SNS
         subject = "✅ No Fire Detected"
         message = f"No fire-related sounds were detected.\n\nTop 5 Predictions:\n" + "\n".join(top_predictions)
 
+        # If fire sound is detected, update the subject and message
         if fire_detected:
             subject = f"🚨 Fire Alert: {class_names[detected_index]} detected!"
             message = (
